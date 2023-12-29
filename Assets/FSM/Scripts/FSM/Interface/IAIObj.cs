@@ -32,5 +32,12 @@ namespace Gavin.FSM
         /// </summary>
         /// <param name="action">动作枚举</param>
         public void ChangeAction(E_Action action);
+
+        /// <summary>
+        /// 检测是否离开驻守范围
+        /// </summary>
+        public bool IsLeavingStationedArea();
+
+
     }
 }

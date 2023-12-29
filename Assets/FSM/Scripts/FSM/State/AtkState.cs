@@ -33,6 +33,8 @@ namespace Gavin.FSM
 
         public override void UpdateState()
         {
+            //先看向
+            stateMachine.aiObj.objTransform.LookAt(stateMachine.aiObj.targetObjPos + Vector3.up * 0.5f);
 
 
             //开始攻击
@@ -49,10 +51,14 @@ namespace Gavin.FSM
                 nextAtkTime = deleyTime;
             }
 
-
-
+            //检测是否超出范围
+            if (stateMachine.aiObj.IsLeavingStationedArea())
+            {
+                stateMachine.ChangeState(E_AI_State.Run);
+            }
 
         }
+
     }
 }
 
