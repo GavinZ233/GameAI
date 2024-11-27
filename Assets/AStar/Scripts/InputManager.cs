@@ -1,7 +1,7 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-namespace Gavin.AStar
+namespace Gavin.AStar2D
 {
     public enum InputType
     {
@@ -9,7 +9,13 @@ namespace Gavin.AStar
         /// 围栏
         /// </summary>
         Fence,
+        /// <summary>
+        /// 路
+        /// </summary>
         Road,
+        /// <summary>
+        /// 水
+        /// </summary>
         Water,
         Start,
         End
@@ -38,6 +44,12 @@ namespace Gavin.AStar
                 currentType = InputType.End;
             if (Input.GetKeyDown(KeyCode.Space))
                 GridManager.Instance.SearchShortPath();
+
+            if (Input.GetKeyDown(KeyCode.C))
+                GridManager.Instance.ClearGridPathColor();
+
+            if (Input.GetKeyDown(KeyCode.B))
+                GridManager.Instance.ClearGridData();
 
         }
     }

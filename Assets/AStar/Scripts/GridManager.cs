@@ -1,7 +1,8 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-namespace Gavin.AStar
+using System.Diagnostics;
+namespace Gavin.AStar2D
 {
     public enum SearchState
     {
@@ -54,14 +55,64 @@ namespace Gavin.AStar
 
         public void SearchShortPath()
         {
+            ClearGridPathColor();
+
             if (start == null || end == null)
                 return;
 
             //开始搜索
+
+            //将格子转成数据
+            int[,] gridData = new int[xCount,yCount];
+            (int,int) startPos=(0,0);
+            (int, int) endPos=(0,0);
+            for (int x = 0; x < xCount; x++)
+            {
+                for (int y = 0; y < yCount; y++)
+                {
+                    gridData[x, y] = gridDic[new Vector2(x, y)].cost;
+                    if (gridDic[new Vector2(x, y)].InputType == InputType.Start)
+                        startPos = (x, y);
+                    if (gridDic[new Vector2(x, y)].InputType == InputType.End)
+                        endPos = (x, y);
+
+                }
+            }
+            if (startPos==(0,0)&& (0, 0) == endPos)
+                UnityEngine.Debug.LogError("起点和终点数据未录入");
+            UnityEngine.Debug.Log("开始寻路算法");
+            Stopwatch sw = Stopwatch.StartNew();
+
+            ReBuildGrid(MyStar.FindPath(gridData, startPos, endPos));
+            sw.Stop();
+            UnityEngine.Debug.Log($"寻路耗时: {sw.ElapsedMilliseconds} ms");
+
         }
 
-        
+        private void ReBuildGrid(List<(int, int)> path)
+        {
+            foreach (var item in path)
+            {
+                gridDic[new Vector2(item.Item1, item.Item2)].SetSearchState(SearchState.Path);
+            }
+        }
+        public void ClearGridPathColor()
+        {
+            foreach (var item in gridDic.Values)
+            {
+                item.SetSearchState(SearchState.Normal);
+            }
+        }
 
+        public void ClearGridData()
+        {
+            foreach (var item in gridDic.Values)
+            {
+                item.SetSearchState(SearchState.Normal);
+                item.InputType = InputType.Road;
+                item.cost = 0;
+            }
+        }
 
         /// <summary>
         /// 如果是起点或者终点，取消之前的起点终点，保证唯一
